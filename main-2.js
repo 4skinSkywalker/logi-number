@@ -269,4 +269,4 @@ function getGame(n) {
     console.log("operations", operations);
 }
 
-getGame(20);
+getGame(8);
