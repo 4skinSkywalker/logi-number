@@ -1,5 +1,14 @@
 const _letters = ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', 'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'Z', 'X', 'C', 'V', 'B', 'N', 'M'];
 
+function shuffle(list) {
+    const res = [];
+    const copyOfList = [ ...list ];
+    while(copyOfList.length > 0) {
+        res.push(...copyOfList.splice(Math.floor(Math.random() * copyOfList.length), 1));
+    }
+    return res;
+}
+
 function rollDice(faces) {
     const _faces = Array(faces).fill(0).map((_, i) => i + 1);
     return _faces[Math.floor(_faces.length * Math.random())];
@@ -230,12 +239,13 @@ function getGame(n) {
 
     // Create chain of pairs
     const chainPairs = [];
-    for (let i = 0; i < n - 1; i++) {
-        chainPairs.push([ letters[i], letters[i + 1] ]);
+    for (let i = 0; i < n; i++) {
+        chainPairs.push([ letters[i], letters[(i + 1) % n] ]);
     }
 
     console.log(letterNumberMap, chainPairs);
 
+    // Pick operations
     const operations = [];
     for(const pair of chainPairs) {
         let operation;
@@ -266,7 +276,7 @@ function getGame(n) {
         operations.push(operation);
     }
     
-    console.log("operations", operations);
+    console.log("operations", shuffle(operations));
 }
 
 getGame(8);
