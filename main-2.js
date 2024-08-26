@@ -169,7 +169,7 @@ function getMul(pair, lnm) {
                 if ((n+``).length > 2) {
                     return false;
                 }
-                res = `${pair[0]} * ${pair[1]} = ${n}`;
+                res = `${pair[0]} × ${pair[1]} = ${n}`;
                 break;
             }
             case 2: { // A * [N] = B
@@ -177,14 +177,14 @@ function getMul(pair, lnm) {
                 if (n % 1 !== 0) {
                     break;
                 }
-                res = `${pair[0]} * ${n} = ${pair[1]}`;
+                res = `${pair[0]} × ${n} = ${pair[1]}`;
                 break;
             }
             case 3: { // A * B = C
                 const c = lnm[pair[0]] * lnm[pair[1]];
                 for (const k in lnm) {
                     if (c === lnm[k]) {
-                        res = `${pair[0]} * ${pair[1]} = ${k}`;
+                        res = `${pair[0]} × ${pair[1]} = ${k}`;
                         break;
                     }
                 }
@@ -205,7 +205,7 @@ function getDiv(pair, lnm) {
                 if (n % 1 !== 0) {
                     break;
                 }
-                res = `${pair[0]} / ${pair[1]} = ${n}`;
+                res = `${pair[0]} ÷ ${pair[1]} = ${n}`;
                 break;
             }
             case 2: { // [N] / A = B
@@ -213,14 +213,14 @@ function getDiv(pair, lnm) {
                 if ((n+``).length > 2) {
                     return false;
                 }
-                res = `${n} / ${pair[0]} = ${pair[1]}`;
+                res = `${n} ÷ ${pair[0]} = ${pair[1]}`;
                 break;
             }
             case 3: { // A / B = C
                 const c = lnm[pair[0]] / lnm[pair[1]];
                 for (const k in lnm) {
                     if (c === lnm[k]) {
-                        res = `${pair[0]} / ${pair[1]} = ${k}`;
+                        res = `${pair[0]} ÷ ${pair[1]} = ${k}`;
                         break;
                     }
                 }
