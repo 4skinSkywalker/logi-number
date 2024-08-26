@@ -133,10 +133,14 @@ function getCmp(pair, lnm) {
                 while(!res && Object.keys(lnmCopy).length) {
                     const _c = pickUnique(1, Object.keys(lnmCopy))[0];
                     delete lnmCopy[_c];
-                    if (lnm[pair[0]] + lnm[pair[1]] < lnm[_c]) {
+                    const isAPlusBLessThanC = lnm[pair[0]] + lnm[pair[1]] < lnm[_c];
+                    const isAMinusBMoreThanC = lnm[pair[0]] - lnm[pair[1]] > lnm[_c];
+                    if (isAPlusBLessThanC) {
                         res = `${pair[0]} + ${pair[1]} < ${_c}`;
-                    } else if (lnm[pair[0]] - lnm[pair[1]] > lnm[_c]) {
+                        break;
+                    } else if (isAMinusBMoreThanC) {
                         res = `${pair[0]} - ${pair[1]} > ${_c}`;
+                        break;
                     }
                 }
                 break;
@@ -161,9 +165,10 @@ function getMul(pair, lnm) {
             }
             case 2: { // A * [N] = B
                 const n = lnm[pair[0]] / lnm[pair[1]];
-                if (n % 1 === 0) {
-                    res = `${pair[0]} * ${n} = ${pair[1]}`;
+                if (n % 1 !== 0) {
+                    break;
                 }
+                res = `${pair[0]} * ${n} = ${pair[1]}`;
                 break;
             }
             case 3: { // A * B = C
@@ -171,6 +176,7 @@ function getMul(pair, lnm) {
                 for (const k in lnm) {
                     if (c === lnm[k]) {
                         res = `${pair[0]} * ${pair[1]} = ${k}`;
+                        break;
                     }
                 }
                 break;
@@ -186,12 +192,29 @@ function getDiv(pair, lnm) {
     while(!res && safe--) {
         switch (rollDice(3)) {
             case 1: { // A / B = [N]
+                const n = lnm[pair[0]] / lnm[pair[1]];
+                if (n % 1 !== 0) {
+                    break;
+                }
+                res = `${pair[0]} / ${pair[1]} = ${n}`;
                 break;
             }
-            case 2: { // A / [N] = B
+            case 2: { // [N] / A = B
+                const n = lnm[pair[0]] * lnm[pair[1]];
+                if ((n+``).length > 2) {
+                    return false;
+                }
+                res = `${n} / ${pair[0]} = ${pair[1]}`;
                 break;
             }
             case 3: { // A / B = C
+                const c = lnm[pair[0]] / lnm[pair[1]];
+                for (const k in lnm) {
+                    if (c === lnm[k]) {
+                        res = `${pair[0]} / ${pair[1]} = ${k}`;
+                        break;
+                    }
+                }
                 break;
             }
         }
@@ -235,6 +258,7 @@ function getGame(n) {
                     break;
                 }
                 case 5: {
+                    operation = getDiv(pair, letterNumberMap);
                     break;
                 }
             }
