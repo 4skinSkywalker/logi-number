@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+    <div class="rules">
+        <div class="rules__title">Rules</div>
+        <div class="rules__list">
+            <div>All the variables are equal to values between 1 and the number of variables in the puzzle.</div>
+            <div>None of the variables are equal to each other.</div>
+            <div>Click on a square to turn it red or green: red marks an exclusion, green marks a solution.</div>
+        </div>
+    </div>
+    <div class="main-wrap">
+        <div class="main">
+            <div>
+                <div class="numbers"></div>
+                <div class="letters-and-grid">
+                    <div class="letters"></div>
+                    <div class="grid"></div>
+                </div>
+            </div>
+            <div class="clues"></div>
+        </div>
+        <div class="buttons">
+            <button onclick="decrease()">-</button>
+            <div><span class="size">5</span>x<span class="size">5</span></div>
+            <button onclick="increase()">+</button>
+        </div>
+        <div class="buttons">
+            <button onclick="init()">New</button>
+            <button onclick="check()">Check</button>
+            <button onclick="reset()">Reset</button>
+        </div>
+        <div class="alert"></div>
+    </div>
+    <script src="./main.js"></script>
+</body>
+</html>
