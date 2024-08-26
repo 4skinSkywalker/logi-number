@@ -5,6 +5,11 @@ const grid = document.querySelector(".grid");
 const clueList = document.querySelector(".clues");
 const alertText = document.querySelector(".alert");
 
+const forms = [
+    "A [O] B = [N]",
+    "A [O] [N] = B",
+];
+
 let clues;
 let letterNumber;
 let size = 5;
