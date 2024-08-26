@@ -24,7 +24,8 @@ function pickUnique(sample, list) {
 
 function getSum(pair, lnm) {
     let res;
-    while(!res) {
+    let safe = 20;
+    while(!res && safe--) {
         switch (rollDice(3)) {
             case 1: { // A + B = [N]
                 const n = lnm[pair[0]] + lnm[pair[1]];
@@ -57,7 +58,8 @@ function getSum(pair, lnm) {
 
 function getDiff(pair, lnm) {
     let res;
-    while(!res) {
+    let safe = 20;
+    while(!res && safe--) {
         switch (rollDice(3)) {
             case 1: { // A - B = [N]
                 const n = lnm[pair[0]] - lnm[pair[1]];
@@ -90,8 +92,9 @@ function getDiff(pair, lnm) {
 
 function getCmp(pair, lnm) {
     let res;
-    while(!res) {
-        switch (rollDice(2)) {
+    let safe = 20;
+    while(!res && safe--) {
+        switch (rollDice(3)) {
             case 1: { // A < B | A > B
                 const sign = Math.sign(lnm[pair[0]] - lnm[pair[1]]);
                 switch (sign) {
@@ -124,6 +127,71 @@ function getCmp(pair, lnm) {
                 break;
             }
             case 3: { // A + B < C | A - B > C
+                const lnmCopy = { ...lnm };
+                delete lnmCopy[pair[0]];
+                delete lnmCopy[pair[1]];
+                while(!res && Object.keys(lnmCopy).length) {
+                    const _c = pickUnique(1, Object.keys(lnmCopy))[0];
+                    delete lnmCopy[_c];
+                    if (lnm[pair[0]] + lnm[pair[1]] < lnm[_c]) {
+                        res = `${pair[0]} + ${pair[1]} < ${_c}`;
+                    } else if (lnm[pair[0]] - lnm[pair[1]] > lnm[_c]) {
+                        res = `${pair[0]} - ${pair[1]} > ${_c}`;
+                    }
+                }
+                break;
+            }
+        }
+    }
+    return res;
+}
+
+function getMul(pair, lnm) {
+    let res;
+    let safe = 20;
+    while(!res && safe--) {
+        switch (rollDice(3)) {
+            case 1: { // A * B = [N]
+                const n = lnm[pair[0]] * lnm[pair[1]];
+                if ((n+``).length > 2) {
+                    return false;
+                }
+                res = `${pair[0]} * ${pair[1]} = ${n}`;
+                break;
+            }
+            case 2: { // A * [N] = B
+                const n = lnm[pair[0]] / lnm[pair[1]];
+                if (n % 1 === 0) {
+                    res = `${pair[0]} * ${n} = ${pair[1]}`;
+                }
+                break;
+            }
+            case 3: { // A * B = C
+                const c = lnm[pair[0]] * lnm[pair[1]];
+                for (const k in lnm) {
+                    if (c === lnm[k]) {
+                        res = `${pair[0]} * ${pair[1]} = ${k}`;
+                    }
+                }
+                break;
+            }
+        }
+    }
+    return res;
+}
+
+function getDiv(pair, lnm) {
+    let res;
+    let safe = 20;
+    while(!res && safe--) {
+        switch (rollDice(3)) {
+            case 1: { // A / B = [N]
+                break;
+            }
+            case 2: { // A / [N] = B
+                break;
+            }
+            case 3: { // A / B = C
                 break;
             }
         }
@@ -145,7 +213,36 @@ function getGame(n) {
 
     console.log(letterNumberMap, chainPairs);
 
-    console.log("getCmp", getCmp(chainPairs[0], letterNumberMap));
+    const operations = [];
+    for(const pair of chainPairs) {
+        let operation;
+        while(!operation) {
+            switch (rollDice(5)) {
+                case 1: {
+                    operation = getSum(pair, letterNumberMap);
+                    break;
+                }
+                case 2: {
+                    operation = getDiff(pair, letterNumberMap);
+                    break;
+                }
+                case 3: {
+                    operation = getCmp(pair, letterNumberMap);
+                    break;
+                }
+                case 4: {
+                    operation = getMul(pair, letterNumberMap);
+                    break;
+                }
+                case 5: {
+                    break;
+                }
+            }
+        }
+        operations.push(operation);
+    }
+    
+    console.log("operations", operations);
 }
 
-getGame(7);
+getGame(20);
