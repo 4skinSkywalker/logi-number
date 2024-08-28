@@ -1,0 +1,18 @@
+<div>
+    <p>table-cells works!</p>
+
+
+    <hr>
+
+    <div>
+        <ng-container *ngFor="let row of euclideanMap; let rowIndex = index">
+            <div class="row">
+                <ng-container *ngFor="let cellXY of row; let colIndex = index">
+                    <span class="cell" [ngStyle]="{'width': cellSize+'rem', 'height': cellSize+'rem'}"></span>
+                </ng-container>
+            </div>
+        </ng-container>
+    </div>
+
+
+</div>
