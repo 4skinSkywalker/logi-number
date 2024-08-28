@@ -31,65 +31,72 @@ function pickUnique(sample, list) {
     return res;
 }
 
-function getSum(pair, lnm) {
+function getSumDiff(pair, lnm) {
     let res;
     let safe = 20;
     while(!res && safe--) {
-        switch (rollDice(3)) {
-            case 1: { // A + B = [N]
-                const n = lnm[pair[0]] + lnm[pair[1]];
-                res = `${pair[0]} + ${pair[1]} = ${n}`; 
+        switch (rollDice(4)) {
+            case 1: { // A +|- B = [N]
+                const op = ["+", "-"][Math.floor(Math.random() * 2)];
+                const n = eval(`${lnm[pair[0]]} ${op} ${lnm[pair[1]]}`);
+                res = `${pair[0]} ${op} ${pair[1]} = ${n}`; 
                 break;
             }
-            case 2: { // A + [N] = B
-                const n = lnm[pair[1]] - lnm[pair[0]];
-                const sign = Math.sign(n);
-                if (sign === -1) {
-                    break;
+            case 2: { // A +|- [N] = B
+                const op = ["+", "-"][Math.floor(Math.random() * 2)];
+                const n = eval(`${lnm[pair[0]]} - ${lnm[pair[1]]}`);
+                switch (op) {
+                    case "+": {
+                        if (Math.sign(n) > 0) {
+                            res = `${pair[1]} + ${n} = ${pair[0]}`;
+                            break;
+                        } else {
+                            res = `${pair[0]} + ${Math.abs(n)} = ${pair[1]}`;
+                            break;
+                        }
+                    }
+                    case "-": {
+                        if (Math.sign(n) > 0) {
+                            res = `${pair[0]} - ${n} = ${pair[1]}`;
+                            break;
+                        } else {
+                            res = `${pair[1]} - ${Math.abs(n)} = ${pair[0]}`;
+                            break;
+                        }
+                    }
                 }
-                res = `${pair[0]} + ${n} = ${pair[1]}`; 
                 break;
             }
-            case 3: { // A + B = C
-                const c = lnm[pair[0]] + lnm[pair[1]];
+            case 3: { // A +|- B = C
+                const op = ["+", "-"][Math.floor(Math.random() * 2)];
+                const c = eval(`${lnm[pair[0]]} ${op} ${lnm[pair[1]]}`);
                 for (const k in lnm) {
-                    if (k !== pair[0] && k !== pair[1] && lnm[k] === c) {
-                        res = `${pair[0]} + ${pair[1]} = ${k}`;
+                    if (k === pair[0] && k === pair[1]) {
+                        continue;
+                    }
+                    if (lnm[k] === c) {
+                        res = `${pair[0]} ${op} ${pair[1]} = ${k}`;
+                        break;
+                    }
+                    if ((lnm[k] * -1) === c) {
+                        res = `${pair[0]} ${op} ${pair[1]} = -${k}`;
                         break;
                     }
                 }
                 break;
             }
-        }
-    }
-    return res;
-}
-
-function getDiff(pair, lnm) {
-    let res;
-    let safe = 20;
-    while(!res && safe--) {
-        switch (rollDice(3)) {
-            case 1: { // A - B = [N]
-                const n = lnm[pair[0]] - lnm[pair[1]];
-                res = `${pair[0]} - ${pair[1]} = ${n}`; 
-                break;
-            }
-            case 2: { // A - [N] = B
-                const n = lnm[pair[0]] - lnm[pair[1]];
-                const sign = Math.sign(n);
-                if (sign === -1) {
-                    break;
-                }
-                res = `${pair[0]} - ${n} = ${pair[1]}`; 
-                break;
-            }
-            case 3: { // A - B = C
-                const c = lnm[pair[0]] - lnm[pair[1]];
+            case 4: { // A +|- B = C +|- D
+                const leftHand = lnm[pair[0]] + lnm[pair[1]];
                 for (const k in lnm) {
-                    if (k !== pair[0] && k !== pair[1] && lnm[k] === c) {
-                        res = `${pair[0]} - ${pair[1]} = ${k}`;
-                        break;
+                    for (const m in lnm) {
+                        if (k === m) {
+                            continue;
+                        }
+                        const rightHand = lnm[k] + lnm[m];
+                        if (k !== pair[0] && k !== pair[1] && leftHand === rightHand) {
+                            res = `${pair[0]} + ${pair[1]} = ${k} + ${m}`;
+                            break;
+                        }
                     }
                 }
                 break;
@@ -160,10 +167,16 @@ function getCmp(pair, lnm) {
 }
 
 function getMul(pair, lnm) {
+    const a = lnm[pair[0]];
+    const b = lnm[pair[1]];
+    if (a=== 1 || b === 1) { // Too easy
+        return false;
+    }
+
     let res;
     let safe = 20;
     while(!res && safe--) {
-        switch (rollDice(3)) {
+        switch (rollDice(4)) {
             case 1: { // A * B = [N]
                 const n = lnm[pair[0]] * lnm[pair[1]];
                 if ((n+``).length > 2) {
@@ -183,9 +196,24 @@ function getMul(pair, lnm) {
             case 3: { // A * B = C
                 const c = lnm[pair[0]] * lnm[pair[1]];
                 for (const k in lnm) {
-                    if (c === lnm[k]) {
+                    if (pair[0] !== k && pair[1] !== k && c === lnm[k]) {
                         res = `${pair[0]} × ${pair[1]} = ${k}`;
                         break;
+                    }
+                }
+                break;
+            }
+            case 4: { // A * B = C + [N]
+                const c = lnm[pair[0]] * lnm[pair[1]];
+                for (const k in lnm) {
+                    if (pair[0] === k && pair[1] === k) {
+                        continue;
+                    }
+                    for (let i = _letters.length - 1; i > 0; i--) {
+                        if (c === (lnm[k] + i)) {
+                            res = `${pair[0]} × ${pair[1]} = ${k} + ${i}`;
+                            break;
+                        }
                     }
                 }
                 break;
@@ -196,10 +224,16 @@ function getMul(pair, lnm) {
 }
 
 function getDiv(pair, lnm) {
+    const a = lnm[pair[0]];
+    const b = lnm[pair[1]];
+    if (a=== 1 || b === 1) { // Too easy
+        return false;
+    }
+
     let res;
     let safe = 20;
     while(!res && safe--) {
-        switch (rollDice(3)) {
+        switch (rollDice(4)) {
             case 1: { // A / B = [N]
                 const n = lnm[pair[0]] / lnm[pair[1]];
                 if (n % 1 !== 0) {
@@ -209,7 +243,7 @@ function getDiv(pair, lnm) {
                 break;
             }
             case 2: { // [N] / A = B
-                const n = lnm[pair[0]] * lnm[pair[1]];
+                const n = a * b;
                 if ((n+``).length > 2) {
                     return false;
                 }
@@ -222,6 +256,21 @@ function getDiv(pair, lnm) {
                     if (c === lnm[k]) {
                         res = `${pair[0]} ÷ ${pair[1]} = ${k}`;
                         break;
+                    }
+                }
+                break;
+            }
+            case 4: { // A / B = C - [N]
+                const c = lnm[pair[0]] / lnm[pair[1]];
+                for (const k in lnm) {
+                    if (pair[0] === k && pair[1] === k) {
+                        continue;
+                    }
+                    for (let i = _letters.length - 1; i > 0; i--) {
+                        if (c === (lnm[k] - i)) {
+                            res = `${pair[0]} ÷ ${pair[1]} = ${k} - ${i}`;
+                            break;
+                        }
                     }
                 }
                 break;
@@ -249,25 +298,22 @@ function getGame(n) {
     const operations = [];
     for(const pair of chainPairs) {
         let operation;
-        while(!operation) {
-            switch (rollDice(5)) {
+        let safe = 20;
+        while(!operation && safe--) {
+            switch (rollDice(4)) {
                 case 1: {
-                    operation = getSum(pair, letterNumberMap);
+                    operation = getSumDiff(pair, letterNumberMap);
                     break;
                 }
                 case 2: {
-                    operation = getDiff(pair, letterNumberMap);
-                    break;
-                }
-                case 3: {
                     operation = getCmp(pair, letterNumberMap);
                     break;
                 }
-                case 4: {
+                case 3: {
                     operation = getMul(pair, letterNumberMap);
                     break;
                 }
-                case 5: {
+                case 4: {
                     operation = getDiv(pair, letterNumberMap);
                     break;
                 }
