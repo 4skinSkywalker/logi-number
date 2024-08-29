@@ -22,8 +22,7 @@
       <div class="numbers"></div>
       <div class="letters-and-grid">
         <div class="letters"></div>
-        <div class="grid">
-
+        <div class="grid" id="grid-table-container">
           <app-table-cells></app-table-cells>
         </div>
       </div>
@@ -37,7 +36,7 @@
   </div>
   <div class="buttons">
     <button onclick="init()">New</button>
-    <button onclick="check()">Check</button>
+    <button (click)="check($event)">Check</button>
     <button onclick="reset()">Reset</button>
   </div>
   <div class="alert"></div>

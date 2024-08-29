@@ -1,0 +1,14 @@
+<!-- <span class="cell" 
+    [ngStyle]="{'width': cellSize+'rem', 'height': cellSize+'rem'}" 
+    (click)="cellClicked($event)" 
+    [ngClass]="clickedCounter == 0 ? 'status0' : clickedCounter == 1 ? 'status1':'status2'"></span> -->
+
+<span class="cell" 
+    [ngStyle]="{'width': cellSize+'rem', 'height': cellSize+'rem'}" 
+    (click)="cellClicked($event)" 
+    [ngClass]="{
+        'status0': clickedCounter == 0,
+        'status1': clickedCounter == 1,
+        'status2': clickedCounter == 2,
+        'solution': solution
+    }"></span>

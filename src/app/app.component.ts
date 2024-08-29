@@ -7,4 +7,10 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'logi-number';
+
+
+  public check(event: any) {
+    console.log("check pressed")
+  }
+  
 }

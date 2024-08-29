@@ -2,3 +2,8 @@
     display: flex;
     flex-direction: row;
 }
+
+.centering-grid {
+    display: flex; 
+    justify-content: center;
+}
