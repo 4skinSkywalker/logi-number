@@ -20,16 +20,21 @@ export class CellComponent {
 
   constructor(tableSolutionsService: TableSolutionsService) {
     this.tableSolutionsService = tableSolutionsService;
-    
+
   }
 
   public cellClicked(event: any) {
-
     let isThereAlreadyGreenInTheCross = this.tableSolutionsService.isThereAGreenInTheCross([this.xCoordinate, this.yCoordinate])
+
+    console.log(`is there already green in the cross? " ${isThereAlreadyGreenInTheCross}`)
 
     // Controllo che nella Crose non ci siano già verdi. Se ci sono già verdi, la cella diventerà solo rossa o bianca
     if (isThereAlreadyGreenInTheCross) {
+      if(this.clickedCounter == 1) {
+        this.clickedCounter = 2
+      } else {
       this.clickedCounter = this.clickedCounter == 0 ? 2 : 0;
+      }
     } else {
       this.clickedCounter = (this.clickedCounter + 1) % 3;
     }

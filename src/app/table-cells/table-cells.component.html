@@ -2,12 +2,22 @@
 
 
     <div>
+
+        <div class="header-table">
+            <div class="number" style="width: 2rem; height: 2rem;"></div>
+            <ng-container *ngFor="let row of euclideanMap; let rowIndex = index">
+                <div class="number" style="width: 2rem; height: 2rem;">{{rowIndex}}</div>
+            </ng-container>
+        </div>
+
         <ng-container *ngFor="let row of euclideanMap; let rowIndex = index">
             <div class="row">
+                <div class="number" style="width: 2rem; height: 2rem;">{{row[rowIndex][0]}}</div>
                 <ng-container *ngFor="let cellXY of row; let colIndex = index">
-                    
-                    <app-cell *ngIf="cellXY[2]" solution="true" xCoordinate="{{cellXY[0]}}" yCoordinate="{{cellXY[1]}}"></app-cell>
-                    <app-cell *ngIf="!cellXY[2]" solution="false" xCoordinate="{{cellXY[0]}}" yCoordinate="{{cellXY[1]}}"></app-cell>
+                    <app-cell *ngIf="cellXY[2]" solution="true" xCoordinate="{{cellXY[0]}}"
+                        yCoordinate="{{cellXY[1]}}"></app-cell>
+                    <app-cell *ngIf="!cellXY[2]" solution="false" xCoordinate="{{cellXY[0]}}"
+                        yCoordinate="{{cellXY[1]}}"></app-cell>
                 </ng-container>
             </div>
         </ng-container>

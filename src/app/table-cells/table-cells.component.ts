@@ -1,6 +1,5 @@
 import { Component, Input } from '@angular/core';
 import { TableSolutionsService } from '../services/table-solutions.service';
-import { table } from 'console';
 
 @Component({
   selector: 'app-table-cells',
