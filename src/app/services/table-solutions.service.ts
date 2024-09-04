@@ -30,6 +30,25 @@ export class TableSolutionsService {
     return this.dimension;
   }
 
+  isThereAGreenInTheCross(input: [string | undefined, number | undefined]): boolean {
+    let valuesIterator = this.selectedCells.values();
+    let keysIterator = this.selectedCells.keys();
+
+    for (let val of valuesIterator) {
+      if(val == input[1]) {
+        return true
+      }
+    }
+
+    for (let key of keysIterator) {
+      if(key == input[0]) {
+        return true
+      }
+    }
+
+    return false;
+  }
+
 
   pushSelectedCell(input: [string, number]) {
     this.selectedCells.set(input[0], input[1]);
@@ -50,6 +69,19 @@ export class TableSolutionsService {
     
     console.log("selectedCells:" );
     console.log(this.selectedCells);
+  }
+
+
+  checkIfIsSolution(): boolean {
+    for(let cell of this.solution) {
+      if(this.selectedCells.has(cell[0]) && (this.selectedCells.get(cell[0]) == cell[1])) {
+
+      } else {
+        return false;
+      }
+    }
+
+    return true;
   }
 
 }
