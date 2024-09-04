@@ -9,9 +9,9 @@ import { table } from 'console';
 })
 export class CellComponent {
 
-  @Input({transform: booleanAttribute}) solution: boolean | undefined;
+  @Input({ transform: booleanAttribute }) solution: boolean | undefined;
   @Input() xCoordinate: string | undefined;
-  @Input({transform: numberAttribute}) yCoordinate: number | undefined;
+  @Input({ transform: numberAttribute }) yCoordinate: number | undefined;
 
   cellSize = 2;
   clickedCounter = 0;
@@ -20,14 +20,15 @@ export class CellComponent {
 
   constructor(tableSolutionsService: TableSolutionsService) {
     this.tableSolutionsService = tableSolutionsService;
-    console.log(this.tableSolutionsService.value)
+    
   }
 
   public cellClicked(event: any) {
 
+    let isThereAlreadyGreenInTheCross = this.tableSolutionsService.isThereAGreenInTheCross([this.xCoordinate, this.yCoordinate])
 
     // Controllo che nella Crose non ci siano già verdi. Se ci sono già verdi, la cella diventerà solo rossa o bianca
-    if(this.tableSolutionsService.isThereAGreenInTheCross([this.xCoordinate, this.yCoordinate])) {
+    if (isThereAlreadyGreenInTheCross) {
       this.clickedCounter = this.clickedCounter == 0 ? 2 : 0;
     } else {
       this.clickedCounter = (this.clickedCounter + 1) % 3;
@@ -36,14 +37,15 @@ export class CellComponent {
     console.log("X: " + this.xCoordinate, " Y: " + this.yCoordinate);
 
     // Se la cella è verde, vado ad inserirla nello stato: selectedCells
-    if(this.clickedCounter == 1 && this.xCoordinate!=undefined && this.yCoordinate!=undefined) {
+    if (this.clickedCounter == 1 && this.xCoordinate != undefined && this.yCoordinate != undefined) {
       this.tableSolutionsService.pushSelectedCell([this.xCoordinate, this.yCoordinate]);
     }
 
     // Se la cella era già nelle selectedCells e diventa rossa, la rimuovo dalle selectedCells
-    if((this.clickedCounter == 2 || this.clickedCounter == 0) && this.xCoordinate!=undefined && this.yCoordinate!=undefined) {
+    if ((this.clickedCounter == 2 || this.clickedCounter == 0) && this.xCoordinate != undefined && this.yCoordinate != undefined) {
       this.tableSolutionsService.removeSelectedCell([this.xCoordinate, this.yCoordinate]);
     }
+
   }
 
 

@@ -23,21 +23,21 @@
       <div class="letters-and-grid">
         <div class="letters"></div>
         <div class="grid" id="grid-table-container">
-          <app-table-cells></app-table-cells>
+          <app-table-cells [euclideanMap]="euclideanMap"></app-table-cells>
         </div>
       </div>
     </div>
     <div class="clues"></div>
   </div>
   <div class="buttons">
-    <button onclick="decrease()">-</button>
-    <div><span class="size">5</span>x<span class="size">5</span></div>
-    <button onclick="increase()">+</button>
+    <button (click)="decrease($event)" [disabled]="this.tableSolutionsService.dimension <= 3">-</button>
+    <div><span class="size">{{this.tableSolutionsService.dimension}}</span>x<span class="size">{{this.tableSolutionsService.dimension}}</span></div>
+    <button (click)="increase($event)" [disabled]="this.tableSolutionsService.dimension >= 10">+</button>
   </div>
   <div class="buttons">
-    <button onclick="init()">New</button>
+    <button (click)="init($event)">New</button>
     <button (click)="check($event)">Check</button>
-    <button onclick="reset()">Reset</button>
+    <button (click)="reset($event)">Reset</button>
   </div>
   <div class="alert"></div>
 </div>
