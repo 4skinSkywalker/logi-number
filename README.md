@@ -1,6 +1,10 @@
 Note:
 
 
+USA NODE versione 20 
+
+Angular 18 
+
 1. La soluzione è sempre la diagonale, generata con lettere a caso. 
 
 2. La cartella logic in realtà ora non viene utilizzata. Viene solo fatto il frontend per testare il comportamento grafico. 
