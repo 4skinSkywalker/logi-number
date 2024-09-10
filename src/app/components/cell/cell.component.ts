@@ -1,13 +1,12 @@
-import { booleanAttribute, Component, Input, numberAttribute, OnInit } from '@angular/core';
-import { TableSolutionsService } from '../services/tableSolution/table-solutions.service';
-import { table } from 'console';
+import { Component, Input, OnInit } from '@angular/core';
+import { TableSolutionsService } from '../../services/tableSolution/table-solutions.service';
 
 @Component({
   selector: 'app-cell',
   templateUrl: './cell.component.html',
   styleUrl: './cell.component.css'
 })
-export class CellComponent implements OnInit {
+export class CellComponent {
 
   @Input() coordinates: string;
 
