@@ -1,5 +1,5 @@
-import { booleanAttribute, Component, Input, numberAttribute } from '@angular/core';
-import { TableSolutionsService } from '../services/table-solutions.service';
+import { booleanAttribute, Component, Input, numberAttribute, OnInit } from '@angular/core';
+import { TableSolutionsService } from '../services/tableSolution/table-solutions.service';
 import { table } from 'console';
 
 @Component({
@@ -7,52 +7,38 @@ import { table } from 'console';
   templateUrl: './cell.component.html',
   styleUrl: './cell.component.css'
 })
-export class CellComponent {
+export class CellComponent implements OnInit {
 
-  @Input({ transform: booleanAttribute }) solution: boolean | undefined;
-  @Input() xCoordinate: string | undefined;
-  @Input({ transform: numberAttribute }) yCoordinate: number | undefined;
-
-  cellSize = 2;
-  clickedCounter = 0;
+  @Input() coordinates: string;
 
   tableSolutionsService: TableSolutionsService;
 
   constructor(tableSolutionsService: TableSolutionsService) {
     this.tableSolutionsService = tableSolutionsService;
-
   }
+
+  public ngOnInit(): void {
+      console.log(`coordinates: ${this.coordinates}`)
+  }
+
 
   public cellClicked(event: any) {
-    let isThereAlreadyGreenInTheCross = this.tableSolutionsService.isThereAGreenInTheCross([this.xCoordinate, this.yCoordinate])
+    // 1. check is already green in cross 
+    let isThereAlreadyGreenInCross = this.tableSolutionsService.isThereAlreadyGreenInCross(this.coordinates)
+    
+    // 2. just change the hashMapOfStates 
+    let actualColor = this.tableSolutionsService.mapCoordinates.get(this.coordinates);
 
-    console.log(`is there already green in the cross? " ${isThereAlreadyGreenInTheCross}`)
-
-    // Controllo che nella Crose non ci siano già verdi. Se ci sono già verdi, la cella diventerà solo rossa o bianca
-    if (isThereAlreadyGreenInTheCross) {
-      if(this.clickedCounter == 1) {
-        this.clickedCounter = 2
-      } else {
-      this.clickedCounter = this.clickedCounter == 0 ? 2 : 0;
-      }
-    } else {
-      this.clickedCounter = (this.clickedCounter + 1) % 3;
+    if(actualColor == "white" && isThereAlreadyGreenInCross) {
+      this.tableSolutionsService.mapCoordinates.set(this.coordinates, "red")
+    } else if (actualColor == "white" && !isThereAlreadyGreenInCross) {
+      this.tableSolutionsService.mapCoordinates.set(this.coordinates, "green")
+    } else if (actualColor == "red") {
+      this.tableSolutionsService.mapCoordinates.set(this.coordinates, "white")
+    } else if (actualColor == "green") {
+      this.tableSolutionsService.mapCoordinates.set(this.coordinates, "red")
     }
-
-    console.log("X: " + this.xCoordinate, " Y: " + this.yCoordinate);
-
-    // Se la cella è verde, vado ad inserirla nello stato: selectedCells
-    if (this.clickedCounter == 1 && this.xCoordinate != undefined && this.yCoordinate != undefined) {
-      this.tableSolutionsService.pushSelectedCell([this.xCoordinate, this.yCoordinate]);
-    }
-
-    // Se la cella era già nelle selectedCells e diventa rossa, la rimuovo dalle selectedCells
-    if ((this.clickedCounter == 2 || this.clickedCounter == 0) && this.xCoordinate != undefined && this.yCoordinate != undefined) {
-      this.tableSolutionsService.removeSelectedCell([this.xCoordinate, this.yCoordinate]);
-    }
-
   }
-
 
 
 

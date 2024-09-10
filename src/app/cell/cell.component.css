@@ -1,15 +1,11 @@
-.status0 {
+.white {
     background-color: white;
 }
 
-.status1 {
+.green {
     background-color: greenyellow;
 }
 
-.status2 {
+.red {
     background-color: red;
 }
-
-/* .solution {
-    background-color: aqua;
-} */
