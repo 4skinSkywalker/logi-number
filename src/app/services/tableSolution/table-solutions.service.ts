@@ -1,13 +1,11 @@
 import { Injectable } from '@angular/core';
 import { UtilsManipulationService } from '../utilsManipulation/utils-manipulation.service';
+import { LogicSolutionService } from '../logicSolution/logic-solution.service';
 
 @Injectable({
   providedIn: 'root',  // è un singleton. Per iniettarlo basta solo mettere l'argomento nel costruttore di un componente, senza strane annotazioni! 
 })
 export class TableSolutionsService {
-
-  // const --> Later to put in logic! 
-  LETTERS = "QWERTYUIOPASDFGHJKLZCVBNM";
 
   dimension = 3; 
   solution: string[] = [];
@@ -16,14 +14,26 @@ export class TableSolutionsService {
   mapCoordinates = new Map<string, string>();  // most important in frontend 
 
   utilsManipulationService: UtilsManipulationService;
+  logicSolutionService: LogicSolutionService;
 
-  constructor(utilsManipulationService: UtilsManipulationService) {
+  constructor(utilsManipulationService: UtilsManipulationService, logicSolutionService: LogicSolutionService) {
     this.utilsManipulationService = utilsManipulationService;
+    this.logicSolutionService = logicSolutionService;
+
+    this.getNewGame();
+    
+  }
+
+
+  getNewGame() {
+    let newGame = this.logicSolutionService.generateNewGame(this.dimension);
+    this.letters = newGame.get("letters");
+    this.numbers = newGame.get("numbers");
+    this.solution = newGame.get("solution");
+
+    console.log(`letters: ${this.letters}, numbers: ${this.numbers}, solution: ${this.solution}`)
 
     this.mapCoordinates = this.utilsManipulationService.generateHashMapCoordinates(this.letters, this.numbers);
-
-    // setting fake solution: 
-    this.solution = ["A.1", "B.2", "C.3"]
   }
 
   // createLetterArrays(letters: string[]) {

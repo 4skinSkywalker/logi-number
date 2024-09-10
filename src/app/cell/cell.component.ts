@@ -18,7 +18,7 @@ export class CellComponent implements OnInit {
   }
 
   public ngOnInit(): void {
-      console.log(`coordinates: ${this.coordinates}`)
+      // console.log(`coordinates: ${this.coordinates}`)
   }
 
 

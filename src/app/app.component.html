@@ -32,7 +32,7 @@
   <div class="buttons">
     <button (click)="decrease($event)" [disabled]="this.tableSolutionsService.dimension <= 3">-</button>
     <div><span class="size">{{this.tableSolutionsService.dimension}}</span>x<span class="size">{{this.tableSolutionsService.dimension}}</span></div>
-    <button (click)="increase($event)" [disabled]="this.tableSolutionsService.dimension >= 10">+</button>
+    <button (click)="increase($event)" [disabled]="this.tableSolutionsService.dimension >= 15">+</button>
   </div>
   <div class="buttons">
     <button (click)="init($event)">New</button>

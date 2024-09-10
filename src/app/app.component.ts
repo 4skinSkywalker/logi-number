@@ -76,29 +76,11 @@ export class AppComponent {
   }
 
   public decrease(event: any) {
-    this.tableSolutionsService.dimension++;
+    this.tableSolutionsService.dimension--;
   }
 
   public init(eveny: any) {
-
-    // // emptying selected cells
-    // this.tableSolutionsService.resetSelectedCells();
-
-    // // Generating a Matrix + Solution
-    // let euclideanMap = this.tableSolutionsService.createMapOfLettersNumbers();
-
-    // // setting it as euclidean map
-    // this.euclideanMap = euclideanMap;
-
-    // // Extracting the solution
-    // let tryToGetSolution = this.tableSolutionsService.findTrueValues(euclideanMap);
-    // console.log("EXTRACTED SOLUTION: ");
-    // console.log(tryToGetSolution)
-
-    // // Setting the solution in tableServiceSolutions 
-    // this.tableSolutionsService.setSolution(tryToGetSolution);
-    // console.log("solutions is ")
-    // console.log(this.tableSolutionsService.solution)
+    this.tableSolutionsService.getNewGame();
   }
 
   public reset(event: any) {

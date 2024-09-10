@@ -3,18 +3,19 @@
 
     <div>
 
+        <!-- First Row -->
         <div class="header-table">
             <div class="number" style="width: 2rem; height: 2rem;"></div>
-            <ng-container *ngFor="let number of this.tableSolutionsService.letters; let rowIndex = index">
-                <div class="number" style="width: 2rem; height: 2rem;">{{rowIndex + 1}}</div>
+            <ng-container *ngFor="let number of this.tableSolutionsService.numbers; let rowIndex = index">
+                <div class="number" style="width: 2rem; height: 2rem;">{{number}}</div>
             </ng-container>
         </div>
 
-        <div *ngFor="let row of this.tableSolutionsService.letters; let rowIndex = index">
+        <div *ngFor="let letter of this.tableSolutionsService.letters; let rowIndex = index">
             <div class="row">
-                <div class="number" style="width: 2rem; height: 2rem;">{{row}}</div>
+                <div class="number" style="width: 2rem; height: 2rem;">{{letter}}</div>
                 <div *ngFor="let number of this.tableSolutionsService.numbers; let colIndex = index">
-                    <app-cell [coordinates]="row + '.' + number"></app-cell>
+                    <app-cell [coordinates]="letter + '.' + number"></app-cell>
                 </div>
             </div>
         </div>
