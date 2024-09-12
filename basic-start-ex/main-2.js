@@ -3,8 +3,8 @@ const _letters = ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', 'A', 'S', 'D
 // va da sè cosa fa 
 function shuffle(list) {
     const res = [];
-    const copyOfList = [...list];
-    while (copyOfList.length > 0) {
+    const copyOfList = [ ...list ];
+    while(copyOfList.length > 0) {
         res.push(...copyOfList.splice(Math.floor(Math.random() * copyOfList.length), 1));
     }
     return res;
@@ -23,7 +23,7 @@ function pickUnique(sample, list) {
     }
 
     const res = [];
-    const copyOfList = [...list];
+    const copyOfList = [ ...list ];
     for (let i = 0; i < sample; i++) {
         const rndIdx = Math.floor(copyOfList.length * Math.random());
         const rnd = copyOfList[rndIdx];
@@ -39,11 +39,11 @@ function pickUnique(sample, list) {
 function getSum(pair, lnm) {
     let res;
     let safe = 20;
-    while (!res && safe--) {
+    while(!res && safe--) {
         switch (rollDice(3)) {
             case 1: { // A + B = [N]
                 const n = lnm[pair[0]] + lnm[pair[1]];
-                res = `${pair[0]} + ${pair[1]} = ${n}`;
+                res = `${pair[0]} + ${pair[1]} = ${n}`; 
                 break;
             }
             case 2: { // A + [N] = B
@@ -52,7 +52,7 @@ function getSum(pair, lnm) {
                 if (sign === -1) {
                     break;
                 }
-                res = `${pair[0]} + ${n} = ${pair[1]}`;
+                res = `${pair[0]} + ${n} = ${pair[1]}`; 
                 break;
             }
             case 3: { // A + B = C
@@ -73,11 +73,11 @@ function getSum(pair, lnm) {
 function getDiff(pair, lnm) {
     let res;
     let safe = 20;
-    while (!res && safe--) {
+    while(!res && safe--) {
         switch (rollDice(3)) {
             case 1: { // A - B = [N]
                 const n = lnm[pair[0]] - lnm[pair[1]];
-                res = `${pair[0]} - ${pair[1]} = ${n}`;
+                res = `${pair[0]} - ${pair[1]} = ${n}`; 
                 break;
             }
             case 2: { // A - [N] = B
@@ -86,7 +86,7 @@ function getDiff(pair, lnm) {
                 if (sign === -1) {
                     break;
                 }
-                res = `${pair[0]} - ${n} = ${pair[1]}`;
+                res = `${pair[0]} - ${n} = ${pair[1]}`; 
                 break;
             }
             case 3: { // A - B = C
@@ -107,7 +107,7 @@ function getDiff(pair, lnm) {
 function getCmp(pair, lnm) {
     let res;
     let safe = 20;
-    while (!res && safe--) {
+    while(!res && safe--) {
         switch (rollDice(3)) {
             case 1: { // A < B | A > B
                 const sign = Math.sign(lnm[pair[0]] - lnm[pair[1]]);
@@ -144,7 +144,7 @@ function getCmp(pair, lnm) {
                 const lnmCopy = { ...lnm };
                 delete lnmCopy[pair[0]];
                 delete lnmCopy[pair[1]];
-                while (!res && Object.keys(lnmCopy).length) {
+                while(!res && Object.keys(lnmCopy).length) {
                     const _c = pickUnique(1, Object.keys(lnmCopy))[0];
                     delete lnmCopy[_c];
                     const isAPlusBLessThanC = lnm[pair[0]] + lnm[pair[1]] < lnm[_c];
@@ -167,11 +167,11 @@ function getCmp(pair, lnm) {
 function getMul(pair, lnm) {
     let res;
     let safe = 20;
-    while (!res && safe--) {
+    while(!res && safe--) {
         switch (rollDice(3)) {
             case 1: { // A * B = [N]
                 const n = lnm[pair[0]] * lnm[pair[1]];
-                if ((n + ``).length > 2) {
+                if ((n+``).length > 2) {
                     return false;
                 }
                 res = `${pair[0]} × ${pair[1]} = ${n}`;
@@ -203,7 +203,7 @@ function getMul(pair, lnm) {
 function getDiv(pair, lnm) {
     let res;
     let safe = 20;
-    while (!res && safe--) {
+    while(!res && safe--) {
         switch (rollDice(3)) {
             case 1: { // A / B = [N]
                 const n = lnm[pair[0]] / lnm[pair[1]];
@@ -215,7 +215,7 @@ function getDiv(pair, lnm) {
             }
             case 2: { // [N] / A = B
                 const n = lnm[pair[0]] * lnm[pair[1]];
-                if ((n + ``).length > 2) {
+                if ((n+``).length > 2) {
                     return false;
                 }
                 res = `${n} ÷ ${pair[0]} = ${pair[1]}`;
@@ -245,16 +245,16 @@ function getGame(n) {
     // Create chain of pairs
     const chainPairs = [];
     for (let i = 0; i < n; i++) {
-        chainPairs.push([letters[i], letters[(i + 1) % n]]);
+        chainPairs.push([ letters[i], letters[(i + 1) % n] ]);
     }
 
     console.log(letterNumberMap, chainPairs);
 
     // Pick operations
     const operations = [];
-    for (const pair of chainPairs) {
+    for(const pair of chainPairs) {
         let operation;
-        while (!operation) {
+        while(!operation) {
             switch (rollDice(5)) {
                 case 1: {
                     operation = getSum(pair, letterNumberMap);
@@ -280,7 +280,7 @@ function getGame(n) {
         }
         operations.push(operation);
     }
-
+    
     console.log("operations", shuffle(operations));
 }
 
