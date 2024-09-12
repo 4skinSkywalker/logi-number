@@ -12,6 +12,7 @@ export class TableSolutionsService {
   letters = ["A", "B", "C"];
   numbers = [1, 2, 3]
   mapCoordinates = new Map<string, string>();  // most important in frontend 
+  clues: string[] = [];
 
   utilsManipulationService: UtilsManipulationService;
   logicSolutionService: LogicSolutionService;
@@ -26,14 +27,17 @@ export class TableSolutionsService {
 
 
   getNewGame() {
-    let newGame = this.logicSolutionService.generateNewGame(this.dimension);
-    this.letters = newGame.get("letters");
-    this.numbers = newGame.get("numbers");
-    this.solution = newGame.get("solution");
+    let newGame = this.logicSolutionService.startGame(this.dimension);
+    this.letters = newGame["letters"];
+    this.numbers = newGame["numbers"];
+    this.solution = newGame["solution"];
 
-    console.log(`letters: ${this.letters}, numbers: ${this.numbers}, solution: ${this.solution}`)
+    
 
     this.mapCoordinates = this.utilsManipulationService.generateHashMapCoordinates(this.letters, this.numbers);
+    this.clues = newGame["clues"];
+
+    console.log(`letters: ${this.letters}, numbers: ${this.numbers}, solution: ${this.solution}, clues: ${this.clues}`)
   }
 
   // createLetterArrays(letters: string[]) {

@@ -11,8 +11,6 @@ export class AppComponent {
 
 
   title = 'logi-number';
-  euclideanMap = [[["A", 1, true], ["A", 2, false], ["A", 3, false]], [["B", 1, false], ["B", 2, true], ["B", 3, false]],
-  [["C", 1, false], ["C", 2, false], ["C", 3, true]]];
 
   tableSolutionsService: TableSolutionsService;
   utilsManipulationService: UtilsManipulationService;

@@ -7,3 +7,18 @@
     display: flex;
     justify-content: center;
 }
+
+.grid {
+    display: flex;
+    justify-content: space-between;
+}
+
+.clue {
+    font-size: medium;
+}
+
+.clues {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+}
