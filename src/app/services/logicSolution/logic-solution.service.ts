@@ -5,7 +5,9 @@ import { Injectable } from '@angular/core';
 })
 export class LogicSolutionService {
 
-  // const --> Later to put in logic! 
+
+  OPERATORS = "+×-÷";
+  OPERATORS2 = this.OPERATORS + "<>";
   LETTERS = "QWERTYUIOPASDFGHJKLZCVBNM";
 
 
@@ -65,6 +67,72 @@ export class LogicSolutionService {
       r.push(copy.splice(rnd, 1)[0]);
     }
     return r;
+  }
+
+  coinFlip(): boolean {
+    // returns true or false with uniform distribution (1/2)
+    return Math.random() > 0.5;
+  }
+
+
+  getClue(letterNumber): string {
+    // Reverse map for lookup by number
+    const numberLetter = Object.entries(letterNumber).reduce(
+        (a, b) => ((a[b[1]] = b[0]), a),
+        {}
+    );
+
+    const [a, b] = this.pickUnique(Object.keys(letterNumber), 2);
+    const [v1, v2] = [letterNumber[a], letterNumber[b]];
+
+    // Relational way
+    if (this.coinFlip()) {
+        const operator = this.pickUnique(this.OPERATORS, 1)[0];
+
+        if (operator === "+") {
+            const c = numberLetter[v1 + v2];
+            if (!c || [a, b].includes(c)) return this.getClue(letterNumber);
+            else return `${a} + ${b} = ${c}`;
+        }
+
+        if (operator === "-") {
+            const c = numberLetter[v1 - v2];
+            if (!c || [a, b].includes(c)) return this.getClue(letterNumber);
+            else return `${a} - ${b} = ${c}`;
+        }
+
+        if (operator === "×") {
+            const c = numberLetter[v1 * v2];
+            if (!c || [a, b].includes(c)) return this.getClue(letterNumber);
+            else return `${a} × ${b} = ${c}`;
+        }
+
+        if (operator === "÷") {
+            const c = numberLetter[v1 / v2];
+            if (!c || [a, b].includes(c)) return this.getClue(letterNumber);
+            else return `${a} ÷ ${b} = ${c}`;
+        }
+    }
+
+    const operator = this.pickUnique(this.OPERATORS2, 1)[0];
+
+    if (operator === "<")
+        if (v1 < v2) return `${a} < ${b}`;
+        else return `${b} < ${a}`;
+
+    if (operator === ">")
+        if (v1 > v2) return `${a} > ${b}`;
+        else return `${b} > ${a}`;
+
+    if (operator === "+") return `${a} + ${b} = ${v1 + v2}`;
+
+    if (operator === "-") return `${a} - ${b} = ${v1 - v2}`;
+
+    if (operator === "×") return `${a} × ${b} = ${v1 * v2}`;
+
+    if (operator === "÷")
+        if (a === 1 || b === 1 || (v1 / v2) % 1 !== 0) return this.getClue(letterNumber);
+        else return `${a} ÷ ${b} = ${v1 / v2}`;
   }
 
 }
