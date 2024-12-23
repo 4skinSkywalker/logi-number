@@ -1,0 +1,54 @@
+.game-wrap {
+    height: 100svh;
+    display: grid;
+    place-items: center;
+}
+
+.grid-wrap {
+    display: flex;
+    gap: 1rem;
+}
+
+.grid {
+    border-spacing: 2px;
+    user-select: none;
+}
+
+.grid-cell {
+    text-align: center;
+    width: 2em;
+    min-width: 2em;
+    height: 2em;
+    min-height: 2em;
+    background: #fff;
+    cursor: pointer;
+}
+
+.grid-cell[data-state="0"] {
+    background: #fff;
+}
+
+.grid-cell[data-state="1"] {
+    background: #0f0;
+}
+
+.grid-cell[data-state="2"] {
+    background: #f00;
+}
+
+.grid-cell.grid-cell--technical {
+    background: #0000;
+}
+
+.grid-cell.grid-cell--equation {
+    width: auto;
+    padding-left: 4px;
+}
+
+.equations {
+    display: grid;
+    grid-auto-rows: calc(2em + 2px);
+    margin-top: calc(2em + 2px);
+    align-items: center;
+    min-width: 125px;
+}

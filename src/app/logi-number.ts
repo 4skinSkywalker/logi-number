@@ -1,6 +1,6 @@
 const _letters = ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', 'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'Z', 'X', 'C', 'V', 'B', 'N', 'M'];
 
-function shuffle(list) {
+function shuffle<T>(list: T[]) {
     const res = [];
     const copyOfList = [ ...list ];
     while(copyOfList.length > 0) {
@@ -9,14 +9,14 @@ function shuffle(list) {
     return res;
 }
 
-function rollDice(faces) {
+function rollDice(faces: number) {
     const _faces = Array(faces).fill(0).map((_, i) => i + 1);
     return _faces[Math.floor(_faces.length * Math.random())];
 }
 
-function pickUnique(sample, list) {
+function pickUnique<T>(sample: number, list: T[]) {
     if (sample > list.length) {
-        return;
+        return [];
     }
 
     const res = [];
@@ -31,7 +31,7 @@ function pickUnique(sample, list) {
     return res;
 }
 
-function getSumDiff(pair, lnm) {
+function getSumDiff(pair: [ string, string ], lnm: Record<string, number>) {
     let res;
     let safe = 20;
     while(!res && safe--) {
@@ -106,7 +106,7 @@ function getSumDiff(pair, lnm) {
     return res;
 }
 
-function getCmp(pair, lnm) {
+function getCmp(pair: [ string, string ], lnm: Record<string, number>) {
     let res;
     let safe = 20;
     while(!res && safe--) {
@@ -166,7 +166,7 @@ function getCmp(pair, lnm) {
     return res;
 }
 
-function getMul(pair, lnm) {
+function getMul(pair: [ string, string ], lnm: Record<string, number>) {
     const a = lnm[pair[0]];
     const b = lnm[pair[1]];
     if (a=== 1 || b === 1) { // Too easy
@@ -223,7 +223,7 @@ function getMul(pair, lnm) {
     return res;
 }
 
-function getDiv(pair, lnm) {
+function getDiv(pair: [ string, string ], lnm: Record<string, number>) {
     const a = lnm[pair[0]];
     const b = lnm[pair[1]];
     if (a=== 1 || b === 1) { // Too easy
@@ -280,19 +280,17 @@ function getDiv(pair, lnm) {
     return res;
 }
 
-function getGame(n) {
+export function getGame(n: number) {
     // Choose values
     const letters = pickUnique(n, _letters);
     const numbers = pickUnique(n, Array(n).fill(0).map((_, i) => i + 1));
-    const letterNumberMap = letters.reduce((a, c, i) => (a[c] = numbers[i], a), {});
+    const letterNumberMap = letters.reduce((a, c, i) => (a[c] = numbers[i], a), {} as Record<string, number>);
 
     // Create chain of pairs
     const chainPairs = [];
     for (let i = 0; i < n; i++) {
-        chainPairs.push([ letters[i], letters[(i + 1) % n] ]);
+        chainPairs.push([ letters[i], letters[(i + 1) % n] ] as [ string, string ]);
     }
-
-    console.log(letterNumberMap, chainPairs);
 
     // Pick operations
     const operations = [];
@@ -322,7 +320,9 @@ function getGame(n) {
         operations.push(operation);
     }
     
-    console.log("operations", shuffle(operations));
+    return {
+        letterNumberMap,
+        chainPairs,
+        operations: shuffle(operations)
+    }
 }
-
-getGame(8);

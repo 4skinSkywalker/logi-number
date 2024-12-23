@@ -1,0 +1,29 @@
+<div class="game-wrap">
+    <div class="grid-wrap">
+        <table class="grid">
+            <thead>
+                <tr>
+                    <th class="grid-cell grid-cell--technical"></th>
+                    @for (n of numbers; track $index) {
+                        <th (click)="clearAllCol(n)" class="grid-cell grid-cell--technical">{{n}}</th>
+                    }
+                </tr>
+            </thead>
+            <tbody>
+                @for (l of letters; track $index) {
+                    <tr>
+                        <td (click)="clearAllRow(l)" class="grid-cell grid-cell--technical">{{l}}</td>
+                        @for (n of numbers; track $index) {
+                            <td (click)="rotateCellState(l, n)" class="grid-cell" [attr.data-state]="matrix[l+':'+n] || 0"></td>
+                        }
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <div class="equations">
+            @for (eq of equations; track $index) {
+                <div>{{eq}}</div>
+            }
+        </div>
+    </div>
+</div>
