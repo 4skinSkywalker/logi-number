@@ -26,6 +26,7 @@ export class AppComponent {
         this.letters = Object.keys(game.letterNumberMap).sort((a, b) => a.localeCompare(b));
         this.numbers = Object.values(game.letterNumberMap).sort((a, b) => a - b);
         this.equations = game.operations;
+        console.log(game);
     }
 
     rotateCellState(l: string, n: number) {

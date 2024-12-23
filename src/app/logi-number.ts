@@ -293,10 +293,10 @@ export function getGame(n: number) {
     }
 
     // Pick operations
-    const operations = [];
+    const operations: string[] = [];
     for(const pair of chainPairs) {
         let operation;
-        let safe = 20;
+        let safe = 1e2;
         while(!operation && safe--) {
             switch (rollDice(4)) {
                 case 1: {
@@ -304,6 +304,10 @@ export function getGame(n: number) {
                     break;
                 }
                 case 2: {
+                    const hasCmp = (op: string) => op.indexOf("<") || op.indexOf(">");
+                    if (operations.filter((op) => typeof op === "string" && hasCmp).length >= Math.floor(n/2)-1) {
+                        break;
+                    }
                     operation = getCmp(pair, letterNumberMap);
                     break;
                 }
@@ -317,7 +321,7 @@ export function getGame(n: number) {
                 }
             }
         }
-        operations.push(operation);
+        operations.push(operation as string);
     }
     
     return {
@@ -326,3 +330,99 @@ export function getGame(n: number) {
         operations: shuffle(operations)
     }
 }
+///////////////////////////////////////////////////////////////////////////
+function nextPermutation(elements: any[], elementValue: any) {
+    // Find longest non-increasing suffix
+    let i = elements.length - 1;
+    while (elementValue[elements[i]] <= elementValue[elements[i - 1]]) i--;
+
+    if (i === 0) return false;
+
+    const pivot = i - 1;
+
+    // Find smallest rightmost number that's bigger than pivot
+    let j = elements.length - 1;
+    while (elementValue[elements[j]] < elementValue[elements[pivot]]) j--;
+
+    // Swap
+    [elements[pivot], elements[j]] = [elements[j], elements[pivot]];
+
+    // Reverse suffix
+    let k = i;
+    let m = elements.length - 1;
+    while (k < m) {
+        [elements[k], elements[m]] = [elements[m], elements[k]];
+        k++;
+        m--;
+    }
+
+    return elements;
+}
+
+function generateAllPermutations(elements: any[], elementValue: any) {
+    const permutations = [[...elements]];
+    let permutation = nextPermutation(elements, elementValue);
+    while (permutation) {
+        permutations.push([...permutation]);
+        permutation = nextPermutation(elements, elementValue);
+    }
+    return permutations;
+}
+
+function checkLogiNumber(game: { operations: any[], letterNumberMap: {[key: string]: number} }) {
+    // Unpack logiNumber
+    const clues = game.operations;
+    const letterNumber = game.letterNumberMap;
+
+    const letters = Object.keys(letterNumber);
+    const side = letters.length;
+
+    // Get permutations of letterNumber
+    const numbers = Array(side)
+        .fill(0)
+        .map((_, i) => ++i);
+    const permutations = generateAllPermutations(
+        numbers,
+        numbers.reduce((a, b) => ((a[b] = b), a), {} as any)
+    );
+    const letterNumberList = permutations.map((p) =>
+        p.reduce((a, b, i) => ((a[letters[i]] = b), a), {})
+    );
+
+    // Adjust expression for evaluation
+    const expressions = clues.map((c) =>
+        c.replace("×", "*").replace("÷", "/").replace("=", "===")
+    );
+
+    // Get validity for each permutation
+    const validityList = letterNumberList.map((letterNumber) =>
+        expressions
+            .map((expression) => {
+                Object.entries(letterNumber).forEach(
+                    ([letter, number]) =>
+                        (expression = expression.replaceAll(letter, number as any))
+                );
+                return expression;
+            })
+            .every((expression) => eval(expression))
+    );
+
+    // Return valid if no more than 1 solution was found
+    return validityList.filter((validity) => validity).length < 2;
+}
+
+let k = 0;
+let i = 8;
+while (i--) {
+    if (i === 2) break;
+    let j = 32-i;
+    while (j--) {
+        k++;
+        const g = getGame(i);
+        const valid = checkLogiNumber(g);
+        if (!valid) {
+            console.log("NON-UNIQUE SOLUTION", g);
+        }
+    }
+}
+console.log("GENERATED", k, "GAMES");
