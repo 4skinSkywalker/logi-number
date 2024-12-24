@@ -1,7 +1,9 @@
 .game-wrap {
     height: 100svh;
     display: grid;
+    place-content: center;
     place-items: center;
+    gap: 1rem;
 }
 
 .grid-wrap {
@@ -50,4 +52,14 @@
     margin-top: calc(2em + 2px);
     align-items: center;
     min-width: 125px;
+}
+
+.actions {
+    display: flex;
+    gap: 1rem;
+}
+
+.actions > button {
+    width: 100px;
+    cursor: pointer;
 }

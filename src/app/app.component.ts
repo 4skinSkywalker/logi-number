@@ -11,9 +11,10 @@ import { getGame, IGame } from './logi-number';
 export class AppComponent {
     title = 'logi-number';
 
+    letterNumberMap!: Record<string, number>;
     letters!: string[];
     numbers!: number[];
-    equations!: (string | boolean | undefined)[]; // Boh...
+    equations!: string[];
 
     matrix: Record<string, number> = {};
 
@@ -22,8 +23,9 @@ export class AppComponent {
         this.init();
     }
 
-    init(g?: IGame) {
-        const game = g || getGame(8);
+    init(n?: number, g?: IGame) {
+        const game = g || getGame(n || 8);
+        this.letterNumberMap = game.letterNumberMap;
         this.letters = Object.keys(game.letterNumberMap).sort((a, b) => a.localeCompare(b));
         this.numbers = Object.values(game.letterNumberMap).sort((a, b) => a - b);
         this.equations = game.operations;
@@ -84,5 +86,37 @@ export class AppComponent {
             }
             this.matrix[`${l}:${n}`] = countRed >= countWhite ? 0 : 2;
         }
+    }
+
+    reset() {
+        for (let l of this.letters) {
+            for (let n of this.numbers) {
+                this.matrix[`${l}:${n}`] = 0;
+            }
+        }
+    }
+
+    check() {
+        const greenTiles: Record<string, number> = {};
+        for (let l of this.letters) {
+            for (let n of this.numbers) {
+                if (this.matrix[`${l}:${n}`] === 1) {
+                    greenTiles[l] = n;
+                }
+            }
+        }
+        if (Object.keys(greenTiles).length !== this.letters.length) {
+            return false;
+        }
+        for (let letter in greenTiles) {
+            if (this.letterNumberMap[letter] !== greenTiles[letter]) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    alert(msg: string) {
+        alert(msg);
     }
 }
