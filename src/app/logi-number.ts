@@ -4,6 +4,18 @@ export interface IGame {
     operations: string[];
 }
 
+interface IOperation {
+    type: EnumOperationTypes;
+    op: string;
+}
+
+enum EnumOperationTypes {
+    SUM_DIFF = "Sum and difference",
+    CMP = "Comparison",
+    MUL = "Multiplication",
+    DIV = "Division",
+}
+
 const _letters = ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', 'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'Z', 'X', 'C', 'V', 'B', 'N', 'M'];
 
 function shuffle<T>(list: T[]) {
@@ -37,15 +49,17 @@ function pickUnique<T>(sample: number, list: T[]) {
     return res;
 }
 
-function getSumDiff(pair: [ string, string ], lnm: Record<string, number>) {
-    let res;
+function getSumDiff(pair: [ string, string ], lnm: Record<string, number>): IOperation | undefined {
+    const type = EnumOperationTypes.SUM_DIFF;
+
+    let res: IOperation | undefined;
     let safe = 20;
     while(!res && safe--) {
         switch (rollDice(4)) {
             case 1: { // A +|- B = [N]
                 const op = ["+", "-"][Math.floor(Math.random() * 2)];
                 const n = eval(`${lnm[pair[0]]} ${op} ${lnm[pair[1]]}`);
-                res = `${pair[0]} ${op} ${pair[1]} = ${n}`; 
+                res = { type, op: `${pair[0]} ${op} ${pair[1]} = ${n}`}; 
                 break;
             }
             case 2: { // A +|- [N] = B
@@ -54,19 +68,19 @@ function getSumDiff(pair: [ string, string ], lnm: Record<string, number>) {
                 switch (op) {
                     case "+": {
                         if (Math.sign(n) > 0) {
-                            res = `${pair[1]} + ${n} = ${pair[0]}`;
+                            res = { type, op: `${pair[1]} + ${n} = ${pair[0]}` };
                             break;
                         } else {
-                            res = `${pair[0]} + ${Math.abs(n)} = ${pair[1]}`;
+                            res = { type, op: `${pair[0]} + ${Math.abs(n)} = ${pair[1]}` };
                             break;
                         }
                     }
                     case "-": {
                         if (Math.sign(n) > 0) {
-                            res = `${pair[0]} - ${n} = ${pair[1]}`;
+                            res = { type, op: `${pair[0]} - ${n} = ${pair[1]}` };
                             break;
                         } else {
-                            res = `${pair[1]} - ${Math.abs(n)} = ${pair[0]}`;
+                            res = { type, op: `${pair[1]} - ${Math.abs(n)} = ${pair[0]}` };
                             break;
                         }
                     }
@@ -81,11 +95,11 @@ function getSumDiff(pair: [ string, string ], lnm: Record<string, number>) {
                         continue;
                     }
                     if (lnm[k] === c) {
-                        res = `${pair[0]} ${op} ${pair[1]} = ${k}`;
+                        res = { type, op: `${pair[0]} ${op} ${pair[1]} = ${k}` };
                         break;
                     }
                     if ((lnm[k] * -1) === c) {
-                        res = `${pair[0]} ${op} ${pair[1]} = -${k}`;
+                        res = { type,  op: `${pair[0]} ${op} ${pair[1]} = -${k}` };
                         break;
                     }
                 }
@@ -100,7 +114,7 @@ function getSumDiff(pair: [ string, string ], lnm: Record<string, number>) {
                         }
                         const rightHand = lnm[k] + lnm[m];
                         if (k !== pair[0] && k !== pair[1] && leftHand === rightHand) {
-                            res = `${pair[0]} + ${pair[1]} = ${k} + ${m}`;
+                            res = { type, op: `${pair[0]} + ${pair[1]} = ${k} + ${m}` };
                             break;
                         }
                     }
@@ -112,8 +126,10 @@ function getSumDiff(pair: [ string, string ], lnm: Record<string, number>) {
     return res;
 }
 
-function getCmp(pair: [ string, string ], lnm: Record<string, number>) {
-    let res;
+function getCmp(pair: [ string, string ], lnm: Record<string, number>): IOperation | undefined {
+    const type = EnumOperationTypes.CMP;
+
+    let res: IOperation | undefined;
     let safe = 20;
     while(!res && safe--) {
         switch (rollDice(3)) {
@@ -121,10 +137,10 @@ function getCmp(pair: [ string, string ], lnm: Record<string, number>) {
                 const sign = Math.sign(lnm[pair[0]] - lnm[pair[1]]);
                 switch (sign) {
                     case -1:
-                        res = `${pair[0]} < ${pair[1]}`;
+                        res = { type, op: `${pair[0]} < ${pair[1]}` };
                         break;
                     case 1:
-                        res = `${pair[0]} > ${pair[1]}`;
+                        res = { type, op: `${pair[0]} > ${pair[1]}` };
                         break;
                 }
                 break;
@@ -138,11 +154,11 @@ function getCmp(pair: [ string, string ], lnm: Record<string, number>) {
                 const sign = Math.sign(diff);
                 switch (sign) {
                     case -1: {
-                        res = `${pair[0]} + ${Math.abs(diff + 1)} < ${pair[1]}`;
+                        res = { type, op: `${pair[0]} + ${Math.abs(diff + 1)} < ${pair[1]}` };
                         break;
                     }
                     case 1: {
-                        res = `${pair[0]} - ${diff - 1} > ${pair[1]}`;
+                        res = { type,  op: `${pair[0]} - ${diff - 1} > ${pair[1]}` };
                         break;
                     }
                 }
@@ -158,10 +174,10 @@ function getCmp(pair: [ string, string ], lnm: Record<string, number>) {
                     const isAPlusBLessThanC = lnm[pair[0]] + lnm[pair[1]] < lnm[_c];
                     const isAMinusBMoreThanC = lnm[pair[0]] - lnm[pair[1]] > lnm[_c];
                     if (isAPlusBLessThanC) {
-                        res = `${pair[0]} + ${pair[1]} < ${_c}`;
+                        res = { type, op: `${pair[0]} + ${pair[1]} < ${_c}` };
                         break;
                     } else if (isAMinusBMoreThanC) {
-                        res = `${pair[0]} - ${pair[1]} > ${_c}`;
+                        res = { type, op: `${pair[0]} - ${pair[1]} > ${_c}` };
                         break;
                     }
                 }
@@ -172,23 +188,25 @@ function getCmp(pair: [ string, string ], lnm: Record<string, number>) {
     return res;
 }
 
-function getMul(pair: [ string, string ], lnm: Record<string, number>) {
+function getMul(pair: [ string, string ], lnm: Record<string, number>): IOperation | undefined {
+    const type = EnumOperationTypes.MUL;
+
     const a = lnm[pair[0]];
     const b = lnm[pair[1]];
-    if (a=== 1 || b === 1) { // Too easy
-        return false;
-    }
+    // if (a === 1 || b === 1) { // Too easy
+    //     return undefined;
+    // }
 
-    let res;
+    let res: IOperation | undefined;
     let safe = 20;
     while(!res && safe--) {
         switch (rollDice(4)) {
             case 1: { // A * B = [N]
                 const n = lnm[pair[0]] * lnm[pair[1]];
                 if ((n+``).length > 2) {
-                    return false;
+                    return undefined;
                 }
-                res = `${pair[0]} × ${pair[1]} = ${n}`;
+                res = { type, op: `${pair[0]} × ${pair[1]} = ${n}` };
                 break;
             }
             case 2: { // A * [N] = B
@@ -196,14 +214,14 @@ function getMul(pair: [ string, string ], lnm: Record<string, number>) {
                 if (n % 1 !== 0) {
                     break;
                 }
-                res = `${pair[0]} × ${n} = ${pair[1]}`;
+                res = { type, op: `${pair[0]} × ${n} = ${pair[1]}` };
                 break;
             }
             case 3: { // A * B = C
                 const c = lnm[pair[0]] * lnm[pair[1]];
                 for (const k in lnm) {
                     if (pair[0] !== k && pair[1] !== k && c === lnm[k]) {
-                        res = `${pair[0]} × ${pair[1]} = ${k}`;
+                        res = { type, op: `${pair[0]} × ${pair[1]} = ${k}` };
                         break;
                     }
                 }
@@ -217,7 +235,7 @@ function getMul(pair: [ string, string ], lnm: Record<string, number>) {
                     }
                     for (let i = _letters.length - 1; i > 0; i--) {
                         if (c === (lnm[k] + i)) {
-                            res = `${pair[0]} × ${pair[1]} = ${k} + ${i}`;
+                            res = { type, op: `${pair[0]} × ${pair[1]} = ${k} + ${i}` };
                             break;
                         }
                     }
@@ -229,14 +247,16 @@ function getMul(pair: [ string, string ], lnm: Record<string, number>) {
     return res;
 }
 
-function getDiv(pair: [ string, string ], lnm: Record<string, number>) {
+function getDiv(pair: [ string, string ], lnm: Record<string, number>): IOperation | undefined {
+    const type = EnumOperationTypes.DIV;
+
     const a = lnm[pair[0]];
     const b = lnm[pair[1]];
-    if (a=== 1 || b === 1) { // Too easy
-        return false;
-    }
+    // if (a === 1 || b === 1) { // Too easy
+    //     return undefined;
+    // }
 
-    let res;
+    let res: IOperation | undefined;
     let safe = 20;
     while(!res && safe--) {
         switch (rollDice(4)) {
@@ -245,22 +265,22 @@ function getDiv(pair: [ string, string ], lnm: Record<string, number>) {
                 if (n % 1 !== 0) {
                     break;
                 }
-                res = `${pair[0]} ÷ ${pair[1]} = ${n}`;
+                res = { type, op: `${pair[0]} ÷ ${pair[1]} = ${n}` };
                 break;
             }
             case 2: { // [N] / A = B
                 const n = a * b;
                 if ((n+``).length > 2) {
-                    return false;
+                    return undefined;
                 }
-                res = `${n} ÷ ${pair[0]} = ${pair[1]}`;
+                res = { type, op: `${n} ÷ ${pair[0]} = ${pair[1]}` };
                 break;
             }
             case 3: { // A / B = C
                 const c = lnm[pair[0]] / lnm[pair[1]];
                 for (const k in lnm) {
                     if (c === lnm[k]) {
-                        res = `${pair[0]} ÷ ${pair[1]} = ${k}`;
+                        res = { type, op: `${pair[0]} ÷ ${pair[1]} = ${k}` };
                         break;
                     }
                 }
@@ -274,7 +294,7 @@ function getDiv(pair: [ string, string ], lnm: Record<string, number>) {
                     }
                     for (let i = _letters.length - 1; i > 0; i--) {
                         if (c === (lnm[k] - i)) {
-                            res = `${pair[0]} ÷ ${pair[1]} = ${k} - ${i}`;
+                            res = { type, op: `${pair[0]} ÷ ${pair[1]} = ${k} - ${i}` };
                             break;
                         }
                     }
@@ -297,47 +317,89 @@ export function getGame(n: number): IGame {
     for (let i = 0; i < n; i++) {
         chainPairs.push([ letters[i], letters[(i + 1) % n] ] as [ string, string ]);
     }
-
-    for (let i = 0; i < 1; i++) {
-        const [a, b] = pickUnique(2, letters);
-        chainPairs.push([ a, b ] as [ string, string ]);
-    }
+    chainPairs.push(pickUnique(2, letters) as [ string, string ]);
 
     // Pick operations
-    const operations: string[] = [];
+    const operations: IOperation[] = [];
     for(const pair of chainPairs) {
         let operation;
         let safe = 1e2;
         while(!operation && safe--) {
             switch (rollDice(4)) {
                 case 1: {
-                    operation = getSumDiff(pair, letterNumberMap);
+                    const sumDiff = getSumDiff(pair, letterNumberMap);
+                    if (!sumDiff) {
+                        break;
+                    }
+                    const symbols = new Set(sumDiff.op.match(/([A-Z])/g)) || [];
+                    const getSymbolIntersection = (op: string) => {
+                        const filtered = (op.match(/([A-Z])/g) || ["-"]).filter(symbol => symbols.has(symbol));
+                        return [...new Set(filtered)];
+                    }
+                    if (operations.filter(({ type }) => type === EnumOperationTypes.SUM_DIFF).some(({ op }) => getSymbolIntersection(op).length === symbols.size)) {
+                        break;
+                    }
+                    operation = sumDiff;
                     break;
                 }
                 case 2: {
-                    if (operations.filter(op => op.indexOf("<") || op.indexOf(">")).length >= Math.floor(n/2)-1) {
+                    const hasCmp = (op: string) => {
+                        return op.indexOf("<") || op.indexOf(">");
+                    }
+                    if (operations.filter(({ op }) => hasCmp(op)).length >= Math.floor(n/2)-1) {
                         break;
                     }
-                    operation = getCmp(pair, letterNumberMap);
+                    const cmp = getCmp(pair, letterNumberMap);
+                    if (!cmp) {
+                        break;
+                    }
+                    const variant1 = cmp.op.replace(/(\w+) < (\w+)/i, "$2 > $1");
+                    const variant2 = cmp.op.replace(/(\w+) > (\w+)/i, "$2 < $1");
+                    if (operations.some(({ op }) => [cmp.op, variant1, variant2].includes(op))) {
+                        break;
+                    }
+                    operation = cmp;
                     break;
                 }
                 case 3: {
-                    operation = getMul(pair, letterNumberMap);
+                    const mul = getMul(pair, letterNumberMap);
+                    if (!mul) {
+                        break;
+                    }
+                    const variant1 = mul.op.replace(/(\w+) × (\w+) = (\w+)/i, "$2 × $1 = $3");
+                    const variant2 = mul.op.replace(/(\w+) × (\w+) = (\w+)/i, "$3 ÷ $1 = $2");
+                    const variant3 = mul.op.replace(/(\w+) × (\w+) = (\w+)/i, "$3 ÷ $2 = $1");
+                    if (operations.some(({ op }) => [mul.op, variant1, variant2, variant3].includes(op))) {
+                        break;
+                    }
+                    operation = mul;
                     break;
                 }
                 case 4: {
-                    operation = getDiv(pair, letterNumberMap);
+                    const div = getDiv(pair, letterNumberMap);
+                    if (!div) {
+                        break;
+                    }
+                    const variant1 = div.op.replace(/(\w+) ÷ (\w+) = (\w+)/i, "$1 ÷ $3 = $2");
+                    const variant2 = div.op.replace(/(\w+) ÷ (\w+) = (\w+)/i, "$2 × $3 = $1");
+                    const variant3 = div.op.replace(/(\w+) ÷ (\w+) = (\w+)/i, "$3 × $2 = $1");
+                    if (operations.some(({ op }) => [div.op, variant1, variant2, variant3].includes(op))) {
+                        break;
+                    }
+                    operation = div;
                     break;
                 }
             }
         }
-        operations.push(operation as string);
+        if (operation) {
+            operations.push(operation);
+        }
     }
     
     return {
         letterNumberMap,
         chainPairs,
-        operations: shuffle(operations)
+        operations: shuffle(operations.map(x => x.op))
     }
 }
 ////////////////////////////////////////////////////////////////////////////////
@@ -421,28 +483,30 @@ function checkLogiNumber(game: { operations: any[], letterNumberMap: {[key: stri
     return validityList.filter((validity) => validity).length < 2;
 }
 
-// (async function() {
-//     let k = 0;
-//     let m = 0;
-//     let i = 9;
-//     while (i--) {
-//         if (i === 2) break;
-//         console.log("GENERATING SOLUTIONS FOR I =", i);
-//         let j = 100;
-//         while (j--) {
-//             k++;
-//             const g = getGame(i);
-//             const valid = checkLogiNumber(g);
-//             if (!valid) {
-//                 m++;
-//                 console.log("NON-UNIQUE SOLUTION", g);
-//                 console.log("GENERATED", k, "GAMES");
-//                 console.log("WITH", m, "NON-UNIQUE GAMES");
-//             }
-//         }
-//         await new Promise(r => setTimeout(r, 100));
-//     }
-//     console.log("COMPLETED!");
-//     console.log("GENERATED", k, "GAMES");
-//     console.log("WITH", m, "NON-UNIQUE GAMES");
-// })();
+async function testValidity() {
+    let k = 0;
+    let m = 0;
+    let i = 8;
+    while (i--) {
+        if (i === 2) break;
+        console.log("GENERATING SOLUTIONS FOR I =", i);
+        let j = 200;
+        while (j--) {
+            k++;
+            const g = getGame(i);
+            const valid = checkLogiNumber(g);
+            if (!valid) {
+                m++;
+                console.log("NON-UNIQUE SOLUTION", g);
+                console.log("GENERATED", k, "GAMES");
+                console.log("WITH", m, "NON-UNIQUE GAMES");
+            }
+        }
+        await new Promise(r => setTimeout(r, 100));
+    }
+    console.log("COMPLETED!");
+    console.log("GENERATED", k, "GAMES");
+    console.log("WITH", m, "NON-UNIQUE GAMES");
+};
+
+// testValidity();
