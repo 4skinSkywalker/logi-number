@@ -1,3 +1,9 @@
+export interface IGame {
+    letterNumberMap: Record<string, number>;
+    chainPairs: [string, string][];
+    operations: string[];
+}
+
 const _letters = ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', 'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'Z', 'X', 'C', 'V', 'B', 'N', 'M'];
 
 function shuffle<T>(list: T[]) {
@@ -280,7 +286,7 @@ function getDiv(pair: [ string, string ], lnm: Record<string, number>) {
     return res;
 }
 
-export function getGame(n: number) {
+export function getGame(n: number): IGame {
     // Choose values
     const letters = pickUnique(n, _letters);
     const numbers = pickUnique(n, Array(n).fill(0).map((_, i) => i + 1));
@@ -290,6 +296,11 @@ export function getGame(n: number) {
     const chainPairs = [];
     for (let i = 0; i < n; i++) {
         chainPairs.push([ letters[i], letters[(i + 1) % n] ] as [ string, string ]);
+    }
+
+    for (let i = 0; i < 1; i++) {
+        const [a, b] = pickUnique(2, letters);
+        chainPairs.push([ a, b ] as [ string, string ]);
     }
 
     // Pick operations
@@ -304,8 +315,7 @@ export function getGame(n: number) {
                     break;
                 }
                 case 2: {
-                    const hasCmp = (op: string) => op.indexOf("<") || op.indexOf(">");
-                    if (operations.filter((op) => typeof op === "string" && hasCmp).length >= Math.floor(n/2)-1) {
+                    if (operations.filter(op => op.indexOf("<") || op.indexOf(">")).length >= Math.floor(n/2)-1) {
                         break;
                     }
                     operation = getCmp(pair, letterNumberMap);
@@ -330,7 +340,7 @@ export function getGame(n: number) {
         operations: shuffle(operations)
     }
 }
-///////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 function nextPermutation(elements: any[], elementValue: any) {
     // Find longest non-increasing suffix
     let i = elements.length - 1;
@@ -411,18 +421,28 @@ function checkLogiNumber(game: { operations: any[], letterNumberMap: {[key: stri
     return validityList.filter((validity) => validity).length < 2;
 }
 
-let k = 0;
-let i = 8;
-while (i--) {
-    if (i === 2) break;
-    let j = 32-i;
-    while (j--) {
-        k++;
-        const g = getGame(i);
-        const valid = checkLogiNumber(g);
-        if (!valid) {
-            console.log("NON-UNIQUE SOLUTION", g);
-        }
-    }
-}
-console.log("GENERATED", k, "GAMES");
+// (async function() {
+//     let k = 0;
+//     let m = 0;
+//     let i = 9;
+//     while (i--) {
+//         if (i === 2) break;
+//         console.log("GENERATING SOLUTIONS FOR I =", i);
+//         let j = 100;
+//         while (j--) {
+//             k++;
+//             const g = getGame(i);
+//             const valid = checkLogiNumber(g);
+//             if (!valid) {
+//                 m++;
+//                 console.log("NON-UNIQUE SOLUTION", g);
+//                 console.log("GENERATED", k, "GAMES");
+//                 console.log("WITH", m, "NON-UNIQUE GAMES");
+//             }
+//         }
+//         await new Promise(r => setTimeout(r, 100));
+//     }
+//     console.log("COMPLETED!");
+//     console.log("GENERATED", k, "GAMES");
+//     console.log("WITH", m, "NON-UNIQUE GAMES");
+// })();
