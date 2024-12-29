@@ -26,8 +26,20 @@
             }
         </div>
     </div>
+    <div class="size-slider">
+        <input
+            type="range"
+            min="4"
+            max="26"
+            step="1"
+            style="flex: 1;"
+            [value]="size"
+            (input)="size = $any($event).target.value"
+        >
+        <div>{{size}}</div>
+    </div>
     <div class="actions">
-        <button (click)="init(8)">New</button>
+        <button (click)="init()">New</button>
         <button (click)="alert('Your solution is ' + (check() ? 'valid' : 'invalid'))">Check</button>
         <button (click)="reset()">Reset</button>
     </div>

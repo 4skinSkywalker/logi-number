@@ -486,7 +486,7 @@ function checkLogiNumber(game: { operations: any[], letterNumberMap: {[key: stri
 async function testValidity() {
     let k = 0;
     let m = 0;
-    let i = 8;
+    let i = 7;
     while (i--) {
         if (i === 2) break;
         console.log("GENERATING SOLUTIONS FOR I =", i);
@@ -509,4 +509,4 @@ async function testValidity() {
     console.log("WITH", m, "NON-UNIQUE GAMES");
 };
 
-// testValidity();
+testValidity();

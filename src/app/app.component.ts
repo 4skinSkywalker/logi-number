@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { getGame, IGame } from './logi-number';
+import { getGame, IGame } from './logi-number.utils';
 
 @Component({
     selector: 'app-root',
@@ -15,6 +15,7 @@ export class AppComponent {
     letters!: string[];
     numbers!: number[];
     equations!: string[];
+    size = "4";
 
     matrix: Record<string, number> = {};
 
@@ -24,11 +25,13 @@ export class AppComponent {
     }
 
     init(n?: number, g?: IGame) {
-        const game = g || getGame(n || 8);
+        n = n || Number(this.size);
+        const game = g || getGame(n);
         this.letterNumberMap = game.letterNumberMap;
         this.letters = Object.keys(game.letterNumberMap).sort((a, b) => a.localeCompare(b));
         this.numbers = Object.values(game.letterNumberMap).sort((a, b) => a - b);
         this.equations = game.operations;
+        this.matrix = {};
         console.log(game);
     }
 
